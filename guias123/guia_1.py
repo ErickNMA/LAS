@@ -168,6 +168,8 @@ plt.show()
 
 
 
+
+
 #Comparando os resultados:
 #Resposta ao degrau:
 def s(t, k, tau, theta):
@@ -267,6 +269,10 @@ plt.title('Ziegler -')
 plt.grid()
 
 plt.show()
+
+
+
+
 
 #Plotando o resultado da simulação-------------------------------------------------------------------
 plt.figure(4)
