@@ -13,6 +13,7 @@ Além disso, lembrem-se que nessa simulação assume-se que o fluido no interior
 @author: Erick Nathan M. Alves & Victor Sidnei Cotta
 @data: 24/09/2022
 """
+from lib2to3.pgen2.literals import evalString
 import numpy as np # importando biblioteca numpy
 import matplotlib.pyplot as plt # importando biblioteca para plotar as figuras
 import control as ct  #importanto biblioteca control
@@ -54,7 +55,7 @@ def deg(array, value, t0, duration, step):
 T = 0.1 #período de amostragem
 # tempo    
 t0 = 0    # tempo inicial
-tf = 3200   # tempo final
+tf = int(3200)   # tempo final
 t = np.linspace(t0,tf,int((tf-t0)/T)) # instantes que desejo ter a solucao
 
 #O sinal é calculado para Taq = Teq e Taq' = 0:
@@ -63,10 +64,9 @@ u = sinal(Teq) * np.ones(t.shape) #Sinal de controle necessário para levar o si
 
 #Aplicando os degraus:
 tdeg = 400
-u = deg(u, sinal(Teq+5), 400, tdeg, T)
-u = deg(u, sinal(Teq-3), 800, tdeg, T)
-u = deg(u, sinal(Teq+3), 1600, tdeg, T)
-u = deg(u, sinal(Teq-5), 2400, tdeg, T)
+degraus = [[5, 400], [-3, 800], [3, 1600], [-5, 2400]]
+for i in range(len(degraus)):
+    u = deg(u, sinal(Teq+degraus[i][0]), degraus[i][1], tdeg, T)
 
 T0 = 27 #Condição inicial do sistema.
 
@@ -87,13 +87,17 @@ plt.ylim(20, 90)
 plt.title('Resposta temporal do sistema em malha aberta')
 plt.grid()
 plt.subplot(2,1,2)
-plt.plot(t,u,'b',label='u0')
+plt.plot(t,u,'b',label='u(t)')
 plt.ylabel('Corrente Elétrica (A)')
 plt.legend()
 plt.xlabel('Tempo [s]')
 plt.xlim(0,tf)
 plt.grid()
 plt.show()
+
+
+
+
 
 #Resposta ao degrau com 3 parâmetros:
 
@@ -142,7 +146,6 @@ C2 = ((75-272.32)/-0.08)
 
 print("\n=> Resposta ao degrau (-5°): \tA = " + str(round(A2, 4)) + "\t B = " + str(round(B2, 4)) + "\t C = " + str(round(C2, 4)))
 
-plt.figure(2)
 plt.subplot(1, 2, 2)
 plt.plot(t,y,'red',label='Taq(t)')
 plt.plot(t,y0,'black',label='Equilíbrio')
@@ -161,3 +164,72 @@ plt.grid()
 
 plt.show()
 
+
+
+#Comparando os resultados:
+#Resposta ao degrau:
+def s(t, k, tau, theta):
+    return (k*(1-np.exp((theta-t)/tau)))
+
+z_up = []
+z_down = []
+m_up = []
+m_down = []
+ttrunc = []
+
+for i in t:
+    if(i>=400):
+        if((i>=400)and(i<800)):
+            base = Teq
+            j = 400
+            k = 5
+        elif((i>=800)and(i<1200)):
+            base = Teq+5
+            j = 800
+            k = -8
+        elif((i>=1200)and(i<1600)):
+            base = Teq-3
+            j = 1200
+            k = 3
+        elif((i>=1600)and(i<2000)):
+            base = Teq
+            j = 1600
+            k = 3
+        elif((i>=2000)and(i<2400)):
+            base = Teq+3
+            j = 2000
+            k = -3
+        elif((i>=2400)and(i<2800)):
+            base = Teq
+            j = 2400
+            k = -5
+        elif((i>=2800)and(i<3200)):
+            base = Teq-5
+            j = 2800
+            k = 5
+        
+        z_up.append(base + s((i-j), k, 83.33, 19.5))
+        z_down.append(base + s((i-j), k, 62.5, 4))
+        m_up.append(base + s((i-j), k, 52.5, 19.5))
+        m_down.append(base + s((i-j), k, 39.375, 4))
+        ttrunc.append(i)
+    
+
+
+
+
+#Plotando o resultado da simulação-------------------------------------------------------------------
+plt.figure(3)
+#plt.subplot(2,1,1)
+plt.plot(t,y,'red',label='Taq(t)')
+plt.plot(ttrunc, m_up,'green',label='Taq(t)')
+plt.plot(ttrunc, m_down,'blue',label='Taq(t)')
+plt.plot(ttrunc, z_up,'yellow',label='Taq(t)')
+plt.plot(ttrunc, z_down,'orange',label='Taq(t)')
+plt.ylabel('Temperatura (°C)')
+plt.xlim(0,tf)
+plt.legend()
+plt.ylim(20, 90)
+plt.title('Resposta temporal do sistema em malha aberta')
+plt.grid()
+plt.show()
