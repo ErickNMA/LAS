@@ -4,7 +4,6 @@
 @author: Erick Nathan M. Alves & Victor Sidnei Cotta
 @data: 24/09/2022
 """
-from lib2to3.pgen2.literals import evalString
 import numpy as np # importando biblioteca numpy
 import matplotlib.pyplot as plt # importando biblioteca para plotar as figuras
 import control as ct  #importanto biblioteca control
