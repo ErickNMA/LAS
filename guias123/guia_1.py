@@ -179,7 +179,6 @@ z_up = []
 z_down = []
 m_up = []
 m_down = []
-ttrunc = []
 
 for i in t:
     if(i>=400):
@@ -216,7 +215,11 @@ for i in t:
         z_down.append(base + s((i-j), k, 62.5, 4))
         m_up.append(base + s((i-j), k, 52.5, 19.5))
         m_down.append(base + s((i-j), k, 39.375, 4))
-        ttrunc.append(i)
+    else:
+        z_up.append(None)
+        z_down.append(None)
+        m_up.append(None)
+        m_down.append(None)
     
 
 
@@ -226,7 +229,7 @@ for i in t:
 plt.figure(3)
 plt.subplot(2, 2, 1)
 plt.plot(t,y,'red',label='Taq(t)')
-plt.plot(ttrunc, m_up,'green',label='Miller +')
+plt.plot(t, m_up,'green',label='Miller +')
 plt.ylabel('Temperatura (°C)')
 plt.xlabel('Tempo (s)')
 plt.xlim(350,tf)
@@ -237,7 +240,7 @@ plt.grid()
 
 plt.subplot(2, 2, 2)
 plt.plot(t,y,'red',label='Taq(t)')
-plt.plot(ttrunc, m_down,'blue',label='Miller -')
+plt.plot(t, m_down,'blue',label='Miller -')
 plt.ylabel('Temperatura (°C)')
 plt.xlabel('Tempo (s)')
 plt.xlim(350,tf)
@@ -248,7 +251,7 @@ plt.grid()
 
 plt.subplot(2, 2, 3)
 plt.plot(t,y,'red',label='Taq(t)')
-plt.plot(ttrunc, z_up,'yellow',label='Ziegler +')
+plt.plot(t, z_up,'yellow',label='Ziegler +')
 plt.ylabel('Temperatura (°C)')
 plt.xlabel('Tempo (s)')
 plt.xlim(350,tf)
@@ -259,7 +262,7 @@ plt.grid()
 
 plt.subplot(2, 2, 4)
 plt.plot(t,y,'red',label='Taq(t)')
-plt.plot(ttrunc, z_down,'orange',label='Ziegler -')
+plt.plot(t, z_down,'orange',label='Ziegler -')
 plt.ylabel('Temperatura (°C)')
 plt.xlabel('Tempo (s)')
 plt.xlim(350,tf)
@@ -277,10 +280,10 @@ plt.show()
 #Plotando o resultado da simulação-------------------------------------------------------------------
 plt.figure(4)
 plt.plot(t,y,'red',label='Taq(t)')
-plt.plot(ttrunc, m_up,'green',label='Miller +')
-plt.plot(ttrunc, m_down,'blue',label='Miller -')
-plt.plot(ttrunc, z_up,'yellow',label='Ziegler +')
-plt.plot(ttrunc, z_down,'orange',label='Ziegler -')
+plt.plot(t, m_up,'green',label='Miller +')
+plt.plot(t, m_down,'blue',label='Miller -')
+plt.plot(t, z_up,'yellow',label='Ziegler +')
+plt.plot(t, z_down,'orange',label='Ziegler -')
 plt.ylabel('Temperatura (°C)')
 plt.xlabel('Tempo (s)')
 plt.xlim(350,tf)
@@ -289,3 +292,19 @@ plt.ylim(70, 90)
 plt.title('Comparação entre os modelos desenvolvidos')
 plt.grid()
 plt.show()
+
+
+
+
+
+#Cálculo do Erro Quadrático Médio:
+def MSE(ref, amostra):
+    cont = 0
+    soma = 0
+    for i in range(len(ref)):
+        if(amostra[i] != None):
+            cont = cont+1
+            soma = soma + ((ref[i]-amostra[i])**2)
+    return (soma/cont)
+
+print("\n=> Erros Quadráticos Médios: \t M+: " + str(round(MSE(y, m_up), 4)) + "\t M-: " + str(round(MSE(y, m_down), 4)) + "\t Z+: " + str(round(MSE(y, z_up), 4)) + "\t Z-: " + str(round(MSE(y, z_down), 4)))
