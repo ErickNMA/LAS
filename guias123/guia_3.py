@@ -1,15 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Esse código simula-se a dinâmica da equação diferencial não linear obtida pela modelagem caixa branca
-para o sistema de escoamento de fluido, através do uso da biblioteca: Python Control Systems. 
-Para tal, serão utilizados dois comando específicos, sendo eles: NonlinearIOSystem, input_output_response.
-
-Para maiores informações consultem as instruções de uso das funções na documentação da
-biblioteca.
-
-Além disso, lembrem-se que nessa simulação assume-se que o fluido no interior do tanque é a água.
-
 @author: Erick Nathan M. Alves & Victor Sidnei Cotta
 @data: 24/09/2022
 """
