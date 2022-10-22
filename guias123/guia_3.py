@@ -287,14 +287,14 @@ plt.show()
 
 
 
-#Cálculo do Erro Quadrático Médio:
-def MSE(ref, amostra):
+#Cálculo da Raíz do Erro Quadrático Médio:
+def RMSE(ref, amostra):
     cont = 0
     soma = 0
     for i in range(len(ref)):
         if(amostra[i] != None):
             cont = cont+1
             soma = soma + ((ref[i]-amostra[i])**2)
-    return (soma/cont)
+    return np.sqrt(soma/cont)
 
-print("\n=> Erros Quadráticos Médios: \t M+: " + str(round(MSE(y, m_up), 4)) + "\t M-: " + str(round(MSE(y, m_down), 4)) + "\t Z+: " + str(round(MSE(y, z_up), 4)) + "\t Z-: " + str(round(MSE(y, z_down), 4)))
+print("\n=> RMSE: \t M+: " + str(round(RMSE(y, m_up), 4)) + "\t M-: " + str(round(RMSE(y, m_down), 4)) + "\t Z+: " + str(round(RMSE(y, z_up), 4)) + "\t Z-: " + str(round(RMSE(y, z_down), 4)))
