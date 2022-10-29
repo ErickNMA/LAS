@@ -4,6 +4,7 @@
 @author: Erick Nathan M. Alves & Victor Sidnei Cotta
 @data: 28/09/2022
 """
+from turtle import pos
 import numpy as np # importando biblioteca numpy
 import matplotlib.pyplot as plt # importando biblioteca para plotar as figuras
 import control as ct  #importanto biblioteca control
@@ -74,23 +75,19 @@ for i in range(len(t)):
 plt.figure(1)
 plt.rcParams['xtick.labelsize'] = 20
 plt.rcParams['ytick.labelsize'] = 20
-plt.plot(t, ya[0],'b', label='y_1(t)', linewidth=3)
+plt.subplot(2, 1, 1)
+plt.plot(t, ya[0],'b', label='$y_1(t)$', linewidth=3)
 plt.plot(t, yb[0],'r--', label='$\phi_{(t)}$', linewidth=3)
-plt.ylabel('y(t)', fontsize=28)
-plt.xlabel('Tempo [s]', fontsize=28)
+plt.ylabel('$y_1$', fontsize=28)
 plt.title('Resposta temporal do sistema com entrada em degrau', fontsize=28)
+plt.legend(fontsize=18)
+plt.grid()
+plt.subplot(2, 1, 2)
+plt.plot(t, ya[1],'y',label='$y_2(t)$', linewidth=3)
+plt.plot(t, yb[1],'g--',label='$\phi(t)$', linewidth=3)
+plt.ylabel('$y_2$', fontsize=28)
+plt.xlabel('Tempo [s]', fontsize=28)
 plt.legend(fontsize=18)
 plt.grid()
 plt.show()
-
-plt.figure(2)
-plt.rcParams['xtick.labelsize'] = 20
-plt.rcParams['ytick.labelsize'] = 20
-plt.plot(t, ya[1],'y',label='$y_2(t)$', linewidth=3)
-plt.plot(t, yb[1],'g--',label='$\phi(t)$', linewidth=3)
-plt.ylabel('y(t)', fontsize=28)
-plt.xlabel('Tempo [s]', fontsize=28)
-plt.title('Resposta temporal do sistema com entrada em degrau', fontsize=28)
-plt.legend(fontsize=18)
-plt.grid()
 plt.show()
