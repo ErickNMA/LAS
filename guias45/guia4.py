@@ -72,21 +72,25 @@ for i in range(len(t)):
     yb[1].append((1/4)*(np.exp(-t[i])) - (1/4)*(np.exp(-5*t[i])))
 
 plt.figure(1)
-plt.plot(t, ya[0],'b',label='y_1(t)')
-plt.plot(t, yb[0],'r--',label='$\phi_{(t)}$')
-plt.ylabel('y(t)')
-plt.xlabel('Tempo [s]')
-plt.title('Resposta temporal do sistema com entrada em degrau')
-plt.legend()
+plt.rcParams['xtick.labelsize'] = 20
+plt.rcParams['ytick.labelsize'] = 20
+plt.plot(t, ya[0],'b', label='y_1(t)', linewidth=3)
+plt.plot(t, yb[0],'r--', label='$\phi_{(t)}$', linewidth=3)
+plt.ylabel('y(t)', fontsize=28)
+plt.xlabel('Tempo [s]', fontsize=28)
+plt.title('Resposta temporal do sistema com entrada em degrau', fontsize=28)
+plt.legend(fontsize=18)
 plt.grid()
 plt.show()
 
 plt.figure(2)
-plt.plot(t, ya[1],'y',label='$y_2(t)$')
-plt.plot(t, yb[1],'g--',label='$\phi(t)$')
-plt.ylabel('y(t)')
-plt.xlabel('Tempo [s]')
-plt.title('Resposta temporal do sistema com entrada em degrau')
-plt.legend()
+plt.rcParams['xtick.labelsize'] = 20
+plt.rcParams['ytick.labelsize'] = 20
+plt.plot(t, ya[1],'y',label='$y_2(t)$', linewidth=3)
+plt.plot(t, yb[1],'g--',label='$\phi(t)$', linewidth=3)
+plt.ylabel('y(t)', fontsize=28)
+plt.xlabel('Tempo [s]', fontsize=28)
+plt.title('Resposta temporal do sistema com entrada em degrau', fontsize=28)
+plt.legend(fontsize=18)
 plt.grid()
 plt.show()
