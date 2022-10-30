@@ -134,17 +134,15 @@ plt.show()
 
 # (5) => Obtenção dos parâmetros por análise gráfica:
 
-Mp = (np.degrees(np.max(xd[0]))-53.13)
+Mp = (((((np.degrees(np.max(xd[0]))-50) - (53.15-50))*100)/(53.15-50))/100)
 tp = (td[indexOf(xd[0], np.max(xd[0]))]-1)
-zeta = (np.log(Mp)/np.sqrt((np.log(Mp)**2)+(np.pi**2)))
-omega_d = (np.pi/tp)
-omega_n = (omega_d/np.sqrt(1-(zeta**2)))
+zeta = (-np.log(Mp)/np.sqrt((np.log(Mp)**2)+(np.pi**2)))
+omega_n = (np.pi/(tp*np.sqrt(1-(zeta**2))))
 
-print("\n omega_n: " + str(round(omega_n, 4)))
-print("\n zeta: " + str(round(zeta, 4)))
-print("\n omega_d: " + str(round(omega_d, 4)))
 print("\n overshoot: " + str(round(Mp, 4)))
 print("\n tp: " + str(round(tp, 4)))
+print("\n zeta: " + str(round(zeta, 4)))
+print("\n omega_n: " + str(round(omega_n, 4)))
 
 
 
@@ -219,14 +217,19 @@ tv, xvf = ct.forced_response(G, T=tv, U=u-u_eq)
 
 #Plotando o resultado da simulação-------------------------------------------------------------------
 plt.figure(5)
+plt.subplot(2, 1, 1)
 plt.rcParams['xtick.labelsize'] = 20
 plt.rcParams['ytick.labelsize'] = 20
 plt.plot(tv, np.degrees(xve[0]),'b', label='EDO', linewidth=3)
 plt.plot(tv, (np.degrees(xvf)+50),'r--', label='$G_{(t)}$', linewidth=3)
 plt.ylabel('$\\theta_{(t)}$ [°]', fontsize=28)
 plt.legend(fontsize=18)
-plt.xlabel('Tempo [s]', fontsize=28)
 plt.title('Validação do Modelo', fontsize=28)
+plt.grid()
+plt.subplot(2, 1, 2)
+plt.plot(tv, u,'g', label='$u_{(t)}$', linewidth=3)
+plt.ylabel('$u_{(t)}$', fontsize=28)
+plt.xlabel('Tempo [s]', fontsize=28)
 plt.grid()
 plt.show()
 
