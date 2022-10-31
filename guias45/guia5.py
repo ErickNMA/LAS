@@ -6,7 +6,7 @@
 """
 
 #Importando as bibliotecas:
-from operator import indexOf, mod
+from operator import indexOf
 import numpy as np # importando biblioteca numpy
 import matplotlib.pyplot as plt # importando biblioteca para plotar as figuras
 import control as ct  #importando biblioteca control
@@ -285,5 +285,17 @@ print('\ngamma2: ' + str(np.round(polos[1], 4)))
 
 # O polinômio característico possui raízes complexas conjugadas, o que caracteriza o comportamento oscilatório subamortecido.
 # O sistema é estável devido a parte real das raízes ser negativa, o que assegura a convergência do sistema para um popnto de equilíbrio desejado.
+
+#Cálculo da Raíz do Erro Quadrático Médio:
+def RMSE(ref, amostra):
+    cont = 0
+    soma = 0
+    for i in range(len(ref)):
+        if(amostra[i] != None):
+            cont = cont+1
+            soma = soma + ((ref[i]-amostra[i])**2)
+    return np.sqrt(soma/cont)
+
+print("\n=> RMSE: " + str(round(RMSE(np.degrees(xve[0]), (np.degrees(xvf)+50)), 4)))
 
 print('\n**********************************************\n\n\n')

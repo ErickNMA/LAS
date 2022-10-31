@@ -4,7 +4,6 @@
 @author: Erick Nathan M. Alves & Victor Sidnei Cotta
 @data: 28/09/2022
 """
-from turtle import pos
 import numpy as np # importando biblioteca numpy
 import matplotlib.pyplot as plt # importando biblioteca para plotar as figuras
 import control as ct  #importanto biblioteca control
