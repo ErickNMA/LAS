@@ -134,7 +134,7 @@ plt.show()
 
 # (5) => Obtenção dos parâmetros por análise gráfica:
 
-Mp = (((((np.degrees(np.max(xd[0]))-50) - (53.15-50))*100)/(53.15-50))/100)
+Mp = ((np.degrees(np.max(xd[0]))-53.15)/(53.15-50))
 tp = (td[indexOf(xd[0], np.max(xd[0]))]-1)
 zeta = (-np.log(Mp)/np.sqrt((np.log(Mp)**2)+(np.pi**2)))
 omega_n = (np.pi/(tp*np.sqrt(1-(zeta**2))))
@@ -177,6 +177,7 @@ plt.show()
 K = (np.radians(53.15-50)/((1.2*u_eq)-u_eq)) #ganho estático do sistema
 s = ct.tf('s')
 G = ((K*(omega_n**2))/((s**2)+(2*zeta*omega_n*s)+(omega_n**2)))
+print('\nG: ' + str(G))
 
 # Simulando a função de transferência
 td, xft = ct.forced_response(G, T=td, U=(u-u_eq))
