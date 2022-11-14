@@ -1,0 +1,12 @@
+=> Guia 6 <=
+
+* Sistema fanplate;
+
+-> Método da resposta ao degrau, com 3 parâmetros (Ziegler)
+
+* Modelo sistemas de primeira ordem superamortecidos (1);
+
+* Parâmetros do sistema obtidos graficamente (Figura 1);
+
+* Resposta ao degrau (2);
+
