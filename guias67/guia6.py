@@ -62,10 +62,10 @@ u_eq = (((K2/K1)*np.sin(np.radians(27)))/(np.cos(np.radians(27))**2)) #sinal que
 u = u_eq*np.ones(t.shape) #criando array com para o sinal
 
 #Instanciando o sistema:
-sys = ct.NonlinearIOSystem(model_update, model_output, states=2, name='sys', inputs=('u'), outputs=('x1','x2'))
+fanplate = ct.NonlinearIOSystem(model_update, model_output, states=2, name='fanplate', inputs=('u'), outputs=('x1','x2'))
 
 #Solucionando o sistema em si:
-t, x = ct.input_output_response(sys, t, u, X0=X0)
+t, x = ct.input_output_response(fanplate, t, u, X0=X0)
 y = x[0]
 
 #Plotando o resultado da simulação-------------------------------------------------------------------
@@ -104,7 +104,7 @@ td = np.arange(0, 25, .01) #criando array de tempo
 u = np.hstack(((u_eq*np.ones(100)), (ud*np.ones(1200)), (u_eq*np.ones(1200))))    
 
 #Solucionando o sistema em si:
-td, xd = ct.input_output_response(sys, td, u, X0=X0)
+td, xd = ct.input_output_response(fanplate, td, u, X0=X0)
 yd = xd[0]
 
 #Plotando o resultado da simulação-------------------------------------------------------------------
@@ -202,7 +202,7 @@ ysv = np.hstack(((27+sd(tv[:1200], -3, tau, theta)), (24+sd(tv[:1200], 6, tau, t
 X0 = [np.radians(27), 0]
 
 #Solucionando o sistema em si:
-tv, xv = ct.input_output_response(sys, tv, uv, X0=X0)
+tv, xv = ct.input_output_response(fanplate, tv, uv, X0=X0)
 yv = np.degrees(xv[0])
 
 #Função de transferência para um sistema de primeira ordem superamortecido:
@@ -234,3 +234,145 @@ plt.show()
 
 # (3) => Inclusão do atraso ao modelo obtido:
 
+theta = 0.15
+
+td1 = np.arange(0, 60, .01)
+
+yd1 = np.hstack(((27+sd(td1[:1200], -3, tau, theta)), (24+sd(td1[:1200], 6, tau, theta)), (30+sd(td1[:1200], -8, tau, theta)), (22+sd(td1[:1200], 13, tau, theta)), (35+sd(td1[:1200], -3, tau, theta))))
+
+#Parâmetros de simulação:
+X0 = [np.radians(27), 0]
+
+#Plotando o resultado da simulação-------------------------------------------------------------------
+plt.figure(5)
+plt.plot(tv, yv, 'red', label='Taq(t)')
+plt.plot(tv, yd1,'blue',label='Miller +')
+plt.ylabel('Temperatura (°C)')
+plt.xlabel('Tempo (s)')
+#plt.xlim(350, tf)
+plt.legend()
+#plt.ylim(70, 90)
+plt.title('Miller +')
+plt.grid()
+plt.show()
+
+
+
+
+
+# (4) e (5) => Atraso por aproximação de Padé:
+
+#Funções de transferência das ordens especificadas:
+Gd = []
+o_p = [1, 3, 5, 9]
+#Aproximação de padé:
+N = ct.pade(0.15, o_p[0])
+#Função de transferência do atraso:
+Gd.append(ct.TransferFunction(np.array(N[0]), np.array(N[1])))
+print('\n Gd1: \t' + str(Gd[0]))
+
+#Aproximação de padé:
+N = ct.pade(0.15, o_p[1])
+#Função de transferência do atraso:
+Gd.append(ct.TransferFunction(np.array(N[0]), np.array(N[1])))
+print('\n Gd3: \t' + str(Gd[1]))
+
+#Aproximação de padé:
+N = ct.pade(0.15, o_p[2])
+#Função de transferência do atraso:
+Gd.append(ct.TransferFunction(np.array(N[0]), np.array(N[1])))
+print('\n Gd5: \t' + str(Gd[2]))
+
+#Aproximação de padé:
+N = ct.pade(0.15, o_p[3])
+#Função de transferência do atraso:
+Gd.append(ct.TransferFunction(np.array(N[0]), np.array(N[1])))
+print('\n Gd9: \t' + str(Gd[3]))
+
+
+
+
+
+# (6) Simulação do sistema com atraso:
+
+y_malha = []
+u = u_eq*np.ones(t.shape) #criando array com para o sinal
+for i in range(4):
+    atraso = ct.tf2io(Gd[i], name='atraso', inputs='u', outputs='y')
+    malha = ct.InterconnectedSystem(
+        (atraso, fanplate), name='malha', 
+        connections=(('atraso.u',), ('fanplate.u', 'atraso.y')), 
+        inplist=('atraso.u'),
+        outlist=('fanplate.x1', 'fanplate.x2')
+    )
+    X0 = np.zeros(o_p[i]+2)
+
+    t, ym = ct.input_output_response(malha, t, u, X0)
+    y_malha.append(ym[0])
+
+#Parâmetros de simulação:
+X0 = [0, 0]
+tn = np.arange(0, 12, .01) #criando array de tempo
+u = u_eq*np.ones(t.shape) #criando array com para o sinal
+
+#Solucionando o sistema em si:
+tn, x = ct.input_output_response(fanplate, tn, u, X0=X0)
+y = x[0]
+
+#Plotando o resultado da simulação-------------------------------------------------------------------
+plt.figure(5)
+plt.plot(tn, np.degrees(y), 'pink', label='Taq(t)')
+plt.plot(t, np.degrees(y_malha[0]), 'red', label='Taq(t)')
+plt.plot(t, np.degrees(y_malha[1]),'green',label='Miller +')
+plt.plot(t, np.degrees(y_malha[2]),'blue',label='Miller +')
+plt.plot(t, np.degrees(y_malha[3]),'yellow',label='Miller +')
+plt.ylabel('Temperatura (°C)')
+plt.xlabel('Tempo (s)')
+#plt.xlim(350, tf)
+plt.legend()
+#plt.ylim(70, 90)
+plt.title('Miller +')
+plt.grid()
+plt.show()
+
+
+
+
+
+# (7) Comparação degrau x atraso por Padé 5ª ordem:
+
+#Parâmetros de simulação:
+X0 = [np.radians(27), 0]
+
+#Criação do degrau:
+u = np.hstack(((ud*np.ones(1200)), (u_eq*np.ones(1200)))) 
+t = np.arange(0, 24, .01) #criando array de tempo
+
+#Solucionando o sistema em si:
+t, xdeg = ct.input_output_response(fanplate, t, u, X0=X0)
+ydeg = xdeg[0]
+
+atraso = ct.tf2io(Gd[2], name='atraso', inputs='u', outputs='y')
+malha = ct.InterconnectedSystem(
+    (atraso, fanplate), name='malha', 
+    connections=(('atraso.u',), ('fanplate.u', 'atraso.y')), 
+    inplist=('atraso.u'),
+    outlist=('fanplate.x1', 'fanplate.x2')
+)
+X0 = np.array([0, 0, 0, 0, 0, np.radians(27), 0])
+
+t, xm = ct.input_output_response(malha, t, u, X0)
+y_md = xm[0]
+
+#Plotando o resultado da simulação-------------------------------------------------------------------
+plt.figure(6)
+plt.plot(t, np.degrees(ydeg), 'red', label='Taq(t)')
+plt.plot(t, np.degrees(y_md),'blue',label='Miller +')
+plt.ylabel('Temperatura (°C)')
+plt.xlabel('Tempo (s)')
+#plt.xlim(350, tf)
+plt.legend()
+#plt.ylim(70, 90)
+plt.title('Miller +')
+plt.grid()
+plt.show()
